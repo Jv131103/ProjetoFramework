@@ -1,0 +1,56 @@
+/* Estilos para a mensagem de erro */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    text-align: center;
+}
+
+h1 {
+    color: red;
+}
+
+p {
+    font-size: 18px;
+}
+
+.navigation {
+    background-color: #f0f0f0;
+    padding: 10px;
+    border: 2px solid #333;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 200px; /* Largura desejada */
+    height: 120px; /* Altura igual à largura para criar um quadrado */
+    margin: 0 auto; /* Centraliza horizontalmente */
+}
+
+
+
+.navigation p {
+    font-size: 18px;
+    margin: 5px 0;
+}
+
+.navigation a {
+    text-decoration: none;
+    color: blue;
+}
+
+.navigation a:hover {
+    text-decoration: underline;
+}
+
+
+/* Estilos para telas menores */
+@media (max-width: 600px) {
+    nav {
+        max-width: 80%;
+        margin: 0 auto;
+    }
+}
+
+img {
+    width: 400px; /* Define a largura desejada */
+    height: 400px; /* Define a altura desejada */
+}

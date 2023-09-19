@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erro de Acesso de Login</title>
+    <link rel="icon" href="/static/image/aviso.jpeg">
+    <link rel="stylesheet" href="/static/css/error_acess.css">
+</head>
+<body>
+    <h1>Erro de Acesso!</h1>
+    <p>Cadastro de usuário inválido</p>
+    <img src="/static/image/BradPit.jpg"> 
+    <nav class="navigation">
+        <p>Você pode:</p>
+        <p>A: <a href="{{ url_for('Cadastro') }}">
+            Cadastrar-se
+          </a></p>
+        <p>ou</p>
+        <p>B: <a href="{{ url_for('Acessar') }}">
+            Retornar a área de Login
+          </a></p>
+    </nav>
+</body>
+</html>

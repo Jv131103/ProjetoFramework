@@ -1,0 +1,77 @@
+                                Informações
+                                    de
+                                Uso e Acessos
+
+====================================================================================================
+Para abrir uma venv digite em seu terminal
+
+python -m venv env
+py -m venv env
+python3 -m venv env
+
+
+Para acessar:
+
+source env/bin/activate 
+
+Para sair:
+
+deactivate
+
+OBS: Caso adicione alguma funcionalidade nova, instale dentro
+da env a biblioteca normalmente com um pip install e depois
+jogue para nosso arquivo requirements.txt. Para jogar Apenas
+faça o seguinte:
+    pip freeze > requirements.txt
+====================================================================================================
+
+|-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
+|Teste Post:                                                                                     |
+|================================================================================================|
+|url com os parâmetros informados: /cadastro/api/insert                                          |
+|Gerar o Json: Apenas uma informação                                                                                  |
+|{                                                                                               |
+|    "nome": "NomeUsuario",                                                                      |
+|    "email": "email@usuario",                                                                   |
+|    "senha": "SenhaUsuario",                                                                    |
+|    "cpf": "cpfUsuario",                                                                        |
+|    "telefone": "telefoneUsuario",                                                              |
+|    "id_tipo": 0 ou 1                                                                           |
+|    "atividade": "0" ou "1"                                                                     |
+|}                                                                                               |
+|-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
+
+|-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
+|Teste do Put:                                                                                   |
+|================================================================================================|
+|url com os parâmetros informados: "/cadastro/api/update/<int:id>"                               |
+|#Gere os dados em formato Json                                                                  |
+|Gerar o Json:                                                                                   |
+|{                                                                                               |
+|    "nome": "NomeUsuario",                                                                      |
+|    "email": "email@usuario",                                                                   |
+|    "senha": "SenhaUsuario",                                                                    |
+|    "cpf": "cpfUsuario",                                                                        |
+|    "telefone": "telefoneUsuario",                                                              |
+|    "atividade": "0" ou "1" #Por enquanto mantenho assim, mas vou remover para update           |
+|}                                                                                               |
+|-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
+
+
+|-----------------------|
+| Entrada do Servidor   |
+|-----------------------|
+| ssh root@154.12.229.38|
+| Senha: Lmds2003@      |
+|-----------------------|
+
+comandos de verificação:
+ls -> Listar dirs do sistema
+cd <Alguma Pasta> -> Para entrar na Pasta
+nano arquivo.alguma_extensão -> Editor do Linux para codificação
+
+==================================================
+|mysql -uroot -p                                 |
+|    senha: 123                                  |
+|Esse comando nos permite acessar oterminal SQL  |
+==================================================

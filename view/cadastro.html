@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro</title>
+    <link rel="icon" href="/static/image/cadastro.png">
+    <link rel="stylesheet" href="/static/css/cadastro.css">
+    <script src="static/script/cadastro.js"></script>
+    <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+  />
+</head>
+<form action="gravar" method="post">
+    <div class="container">
+      <div class="card">
+        <h1>Cadastrar</h1>
+
+        <div class="label-float">
+          <input type="text" name="nome" placeholder="" required />
+          <label id="nome" for="nome">Nome</label>
+        </div>
+
+        <div class="label-float">
+          <input type="text" name="email" placeholder="" required />
+          <label id="email" for="Login">Login</label>
+        </div>
+
+        <div class="label-float">
+            <input type="text" name="cpf" placeholder="" required />
+            <label id="cpf" for="cpf">CPF</label>
+          </div>
+
+        <div class="label-float">
+            <input type="text" name="telefone" placeholder="" required />
+            <label id="telefone" for="telefone">Telefone</label>
+          </div>
+        
+        <br>
+        <div class="label-float">
+            <h2>Por Favor, insira se é professor ou aluno!</h2>
+            <input type="radio" name="tipo_registro" value="1" required />Aluno<br>
+            <input type="radio" name="tipo_registro" value="2" required />Professor<br>
+        </div>
+        
+        <br>
+
+        <div class="label-float password-container">
+          <input type="password" id="senha1" name="senha1" placeholder="senha" required>
+          <span class="password-toggle" onclick="togglePasswordVisibility('senha1')">Mostrar</span>
+          <button type="button" id="gerarSenhaBtn">Gerar Senha Aleatória</button>
+        </div>
+
+        <div class="label-float password-container">
+          <input type="password" id="senha2" name="senha2" placeholder="repetir_senha" required>
+          <span class="password-toggle" onclick="togglePasswordVisibility('senha2')">Mostrar</span>
+        </div>
+
+        <div class="justify-center">
+          <button onclick="cadastrar()">Cadastrar</button>
+        </div>
+        <br>
+        <p>
+            Quer retornar a área de login?
+            <a href="{{ url_for('Acessar') }}">
+              Clique aqui
+            </a>
+          </p>
+      </div>
+    </div>
+  </form>
+  <div id="error-message" class="error-message"></div>
+  </body>
+</html>
