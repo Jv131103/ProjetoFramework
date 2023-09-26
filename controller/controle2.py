@@ -1,5 +1,6 @@
 import sys
-sys.path.append('/home/joao/Documentos/ProjetoQuinta/')  # Substitua pelo caminho real
+import os
+sys.path.append(os.getcwd())   # Substitua pelo caminho real
 
 from model import modelo2
 import mysql.connector

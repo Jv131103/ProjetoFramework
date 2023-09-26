@@ -1,5 +1,6 @@
 import sys
-sys.path.append('/home/joao/Documentos/ProjetoQuinta/')  # Substitua pelo caminho real
+import os
+sys.path.append(os.getcwd())   # Substitua pelo caminho real
 
 
 from model import modelo
@@ -80,6 +81,10 @@ class VerificacaoCrud(modelo.BancoCrud):
 
     def ativar_usuario(self, id: int) -> dict: #Método ativar_usuario que nos permite ativar um usuário cadastrado por meio do seu id
         try:
+            
+
+
+
             if self._elemento_existe(id): #Se os dados existirem
                 # Verifique se o usuário já está ativo
                 comando_verificacao = f'SELECT atividade FROM Usuario WHERE id={id}' #Chamam o comando
@@ -101,6 +106,45 @@ class VerificacaoCrud(modelo.BancoCrud):
                 return {"status": False, "msg": "Elemento inexistente"}
         except mysql.connector.Error as err: #Erro de execução do MySQL
             return {"status": False, "msg": f"Erro ao ativar usuário: {err}"}
+        
+        ####################################################################################################
+    def ValidarEmailESenha(self, email, senha):
+        try:
+                comando = f'SELECT id FROM Usuario WHERE email="{email}" AND senha="{senha}"'
+                self.cursor.execute(comando)
+                resultado = self.cursor.fetchone()
+                if resultado is not None:
+                    return True
+                else:
+                    return False
+        except mysql.connector.Error as err:
+            print("ERRO de MySQL")
+        
+    
+
+    def BuscarIdPorEmail(self, email):
+        try:
+                comando = f'SELECT id FROM Usuario WHERE email="{email}"'
+                self.cursor.execute(comando)
+                resultado = self.cursor.fetchone()[0]
+                if resultado is not None:
+                    return resultado
+                else:
+                    return False
+        except mysql.connector.Error as err:
+            print("ERRO de MySQL")
+
+    def VerificarAdmin(self, email):
+        try:
+                comando = f'SELECT id_tipo FROM Usuario WHERE email="{email}"'
+                self.cursor.execute(comando)
+                resultado = self.cursor.fetchone()[0]
+                if resultado is not None:
+                    return resultado
+                else:
+                    return False
+        except mysql.connector.Error as err:
+            print("ERRO de MySQL")
 
 
 if __name__ == "__main__":

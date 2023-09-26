@@ -1,4 +1,6 @@
 import bcrypt
+import jwt
+import datetime
 
 class ValidarCPF:
     '''Classe que nos permite verificar e validar um CPF'''
@@ -83,39 +85,29 @@ class ValidarCPF:
             sub = 11 - resto
             return sub
 
-class ProtegerSenha:
-    '''Classe que nos permite Gerar Hashs de senha'''
-    def __init__(self) -> None: #Método construtor da classe que tem seu retorno None
-        self.__senha = "" #Atributo privado senha que recebe uma string vazia
-        self.__hashed_password = "" #Atributo privado hashed_password que nos retornará o hash da senha, mas por padrão é uma string vazia
 
-    def GerarHash(self, senha:str) -> str: #Método que nos permite Gerar o HASH da senha e recebe o parâmetro senha, que precisa ser inserido
-        # Gerar um salt aleatório
-        salt = bcrypt.gensalt()
+class TokenManager:
+    def __init__(self, secret_key):
+        self.secret_key = secret_key
 
-        self.__senha = senha #O atributo privado senha recebe a senha inseida
+    def generate_token(self, username, expiration_hours=24):
+        # Dados do usuário que serão incluídos no token
+        user_data = {
+            'username': username,
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=expiration_hours)
+        }
 
-        self.__hashed_password = bcrypt.hashpw(self.__senha.encode('utf-8'), salt) #O atributo privado hashed_password vai receber a criptografia da senha inserida
+        # Gere o token
+        token = jwt.encode(user_data, self.secret_key, algorithm='HS256')
+        return token
 
-        return self.__hashed_password
-    
-    def ValidarSenhaHash(self, senha: str) -> str: #Método que nos permite validar e liberar o acesso ao cadastro
-        if bcrypt.checkpw(senha.encode('utf-8'), self.__hashed_password): #Se a senha inserida corresponder ao salt de hash, ele será válido
-            print("Acesso permitido!")
-            return True
-        else: #Caso contrário, não permitirá o acesso
-            print("Acesso negado!")
-            return False
+    def verify_token(self, token):
+        try:
+            decoded_data = jwt.decode(token, self.secret_key, algorithms=['HS256'])
+            return decoded_data
+        except jwt.ExpiredSignatureError:
+            return {"error": "Token expirado"}
+        except jwt.InvalidTokenError:
+            return {"error": "Token inválido"}
 
-
-# Testes
-if __name__ == "__main__":
-    c = ValidarCPF("433.783.648-90")
-    print(c.validacao())
-    print(c.analisar())
-
-    senha = "123"
-    gerar = ProtegerSenha()
-    print(gerar.GerarHash(senha)) 
-    print(gerar.ValidarSenhaHash(senha))
 

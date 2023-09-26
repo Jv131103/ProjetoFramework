@@ -7,8 +7,8 @@ class BancoCrud:
     def __init__(self) -> None: #Método construtor que fará a conexão com o Banco de Dados
         self.conex = mysql.connector.connect(
             host="localhost",
-            user="root",
-            password="Joao$131103",
+            user="muniz",
+            password="lmds2003",
             database="Projeto"
         ) #Faz a conexão com o MySQL
     
@@ -90,6 +90,8 @@ class BancoCrud:
                         self.tipo = "professor"
                     elif resul[6] == 2:
                         self.tipo = "aluno"
+                    elif resul[6] == 3:
+                        self.tipo = "admin"
                     else:
                         return {"status": False, "msg": "Valor Inexistente para tipo"}
                     if resul[7] == "0":
@@ -151,8 +153,8 @@ class BancoCrud:
 
 if __name__ == "__main__":
     b = BancoCrud()
-    print(b.Create("nome", "email", "senha", "cpf", "telefone", 1, "1"))
-    print(b.Read())   
+    #print(b.Create("nome", "email", "senha", "cpf", "telefone", 1, "1"))
+    #print(b.Read())   
     #print(b.Update("nome", "email", "senha", "cpf", "telefone", "0", 1)) 
     #print(b.Delete(1))
-    print(b.Read()) 
+    #print(b.Read()) 

@@ -72,4 +72,3 @@ SELECT * FROM Uso_Lab;
 SELECT * FROM Labs;
 
 -- SELECT id FROM Usuario WHERE email='Bia@Bia' AND senha='123';
-
