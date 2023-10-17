@@ -1,75 +1,112 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro</title>
-    <link rel="icon" href="/static/image/cadastro.png">
-    <link rel="stylesheet" href="/static/css/cadastro.css">
-    <script src="static/script/cadastro.js"></script>
-    <link
-    rel="stylesheet"
-    href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-  />
+    <link rel="stylesheet" href="/static/css/cadastro.css"> <!-- Certifique-se de substituir pelo caminho real do seu arquivo CSS -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var form = document.getElementById("cadastroForm");
+
+            form.addEventListener("submit", function(event) {
+                if (!validateForm()) {
+                    event.preventDefault(); // Impede o envio do formulário se a validação falhar
+                    displayErrorMessage("Por favor, preencha todos os campos.");
+                }
+            });
+
+            var inputs = document.querySelectorAll("input");
+
+            inputs.forEach(function(input) {
+                input.addEventListener("focus", function() {
+                    this.classList.add("focused");
+                });
+
+                input.addEventListener("blur", function() {
+                    this.classList.remove("focused");
+                });
+            });
+
+            // Adicione aqui outras funcionalidades necessárias
+        });
+
+        function validateForm() {
+            var nome = document.getElementById("nome").value;
+            var email = document.getElementById("email").value;
+            var senha = document.getElementById("senha").value;
+            var repetirSenha = document.getElementById("repetirSenha").value;
+            var cpf = document.getElementById("cpf").value;
+            var telefone = document.getElementById("telefone").value;
+            var tipoUsuario = document.querySelector('input[name="tipoUsuario"]:checked');
+
+            // Exemplo de validação simples
+            if (nome === "" || email === "" || senha === "" || repetirSenha === "" || cpf === "" || telefone === "" || !tipoUsuario) {
+                displayErrorMessage("Por favor, preencha todos os campos.");
+                return false;
+            }
+
+            // Verifica se as senhas coincidem
+            if (senha !== repetirSenha) {
+                displayErrorMessage("As senhas não coincidem.");
+                return false;
+            }
+
+            // Verifica se as senhas coincidem
+            if (senha !== repetirSenha) {
+                displayErrorMessage("As senhas não coincidem.");
+                return false;
+            }
+
+            return true;
+        }
+
+        function displayErrorMessage(message) {
+            var errorMessage = document.createElement("p");
+            errorMessage.style.color = "red";
+            errorMessage.textContent = message;
+
+            var form = document.getElementById("cadastroForm");
+            form.appendChild(errorMessage);
+
+            // Limpar a mensagem após alguns segundos (opcional)
+            setTimeout(function() {
+                errorMessage.remove();
+            }, 3000);
+        }
+    </script>
 </head>
-<form action="gravar" method="post">
-    <div class="container">
-      <div class="card">
-        <h1>Cadastrar</h1>
+<body>
+    <h1>Cadastro</h1>
+    <form action="/cadastro" method="post" id="cadastroForm">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" required><br>
 
-        <div class="label-float">
-          <input type="text" name="nome" placeholder="" required />
-          <label id="nome" for="nome">Nome</label>
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email" required><br>
+
+        <label for="senha">Senha:</label>
+        <input type="password" id="senha" name="senha" required><br>
+
+        <label for="repetirSenha">Repetir Senha:</label>
+        <input type="password" id="repetirSenha" name="repetirSenha" required><br>
+
+        <label for="cpf">CPF:</label>
+        <input type="text" id="cpf" name="cpf" required><br>
+
+        <label for="telefone">Telefone:</label>
+        <input type="text" id="telefone" name="telefone" required><br>
+
+        <label for="tipoUsuario">Tipo de usuário:</label>
+        <input type="radio" id="tipoUsuario" name="tipoUsuario" value="1"> Professor
+        <input type="radio" id="tipoUsuario" name="tipoUsuario" value="2"> Aluno<br>
+
+
+        <div class="button-container">
+            <input type="submit" value="Cadastrar">
+            <input type="reset" value="Limpar Dados">
         </div>
-
-        <div class="label-float">
-          <input type="text" name="email" placeholder="" required />
-          <label id="email" for="Login">Login</label>
-        </div>
-
-        <div class="label-float">
-            <input type="text" name="cpf" placeholder="" required />
-            <label id="cpf" for="cpf">CPF</label>
-          </div>
-
-        <div class="label-float">
-            <input type="text" name="telefone" placeholder="" required />
-            <label id="telefone" for="telefone">Telefone</label>
-          </div>
-        
-        <br>
-        <div class="label-float">
-            <h2>Por Favor, insira se é professor ou aluno!</h2>
-            <input type="radio" name="tipo_registro" value="1" required />Aluno<br>
-            <input type="radio" name="tipo_registro" value="2" required />Professor<br>
-        </div>
-        
-        <br>
-
-        <div class="label-float password-container">
-          <input type="password" id="senha1" name="senha1" placeholder="senha" required>
-          <span class="password-toggle" onclick="togglePasswordVisibility('senha1')">Mostrar</span>
-          <button type="button" id="gerarSenhaBtn">Gerar Senha Aleatória</button>
-        </div>
-
-        <div class="label-float password-container">
-          <input type="password" id="senha2" name="senha2" placeholder="repetir_senha" required>
-          <span class="password-toggle" onclick="togglePasswordVisibility('senha2')">Mostrar</span>
-        </div>
-
-        <div class="justify-center">
-          <button onclick="cadastrar()">Cadastrar</button>
-        </div>
-        <br>
-        <p>
-            Quer retornar a área de login?
-            <a href="{{ url_for('Acessar') }}">
-              Clique aqui
-            </a>
-          </p>
-      </div>
-    </div>
-  </form>
-  <div id="error-message" class="error-message"></div>
-  </body>
+    </form>
+</body>
 </html>
+

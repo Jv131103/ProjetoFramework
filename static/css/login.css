@@ -1,0 +1,86 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background: url('/static/image/fund0.jpg') center/cover no-repeat; /* Substitua o caminho da imagem conforme necessário */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    color: #fff; /* Adicionado para garantir que o texto seja legível na imagem de fundo */
+}
+
+h1 {
+    text-align: center;
+    color: #333; /* Mudando a cor do título se necessário */
+}
+
+form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    max-width: 100%;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+input[type="submit"] {
+    width: 48%;
+    background-color: #4caf50;
+    color: #fff;
+    cursor: pointer;
+}
+
+input[type="reset"] {
+    width: 48%;
+    background-color: #ff0000; /* Vermelho */
+    color: #fff;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover,
+input[type="reset"]:hover {
+    background-color: #45a049;
+}
+
+.password-container {
+    position: relative;
+}
+
+#togglePassword {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #555;
+}
+
+#togglePassword.visible::before {
+    content: '\1F441'; /* Unicode para o ícone de olho */
+    font-size: 18px;
+}
+
+p{color: #333;}

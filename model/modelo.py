@@ -7,8 +7,8 @@ class BancoCrud:
     def __init__(self) -> None: #Método construtor que fará a conexão com o Banco de Dados
         self.conex = mysql.connector.connect(
             host="localhost",
-            user="muniz",
-            password="lmds2003",
+            user="root",
+            password="Joao$131103",
             database="Projeto"
         ) #Faz a conexão com o MySQL
     
@@ -34,13 +34,13 @@ class BancoCrud:
             return False
 
 
-    def Create(self, nome: str, email: str, senha: str, cpf: str, telefone: str, id_tipo: int, atividade: str) -> dict:
+    def Create(self, nome: str, email: str, senha: str, cpf: str, telefone: str, id_tipo: int, atividade: str="1") -> dict:
         try:
             if self.CheckDuplicate(nome):
-                return {"status": False, "msg": "Registro já existe"}
+                return {"status": False, "response": 403 ,"msg": "Registro já existe"}
 
             if not nome or not email or not senha or not cpf or not telefone or not id_tipo:
-                return {"status": False, "msg": "Itens de cadastro são obrigatórios"}
+                return {"status": False, "response": 403 ,"msg": "Itens de cadastro são obrigatórios"}
             
             self.nome = nome
             self.email = email
@@ -56,23 +56,23 @@ class BancoCrud:
                 elif id_tipo == 2:
                     self.tipo = 2
                 else:
-                    return {"status": False, "msg": "Valor Inexistente para tipo"}
+                    return {"status": False, "response": 403, "msg": "Valor Inexistente para tipo"}
                 if atividade == "0":
                     self.atividade = "Desativado"
                 elif atividade == "1":
                     self.atividade = "Ativado"
                 else:
-                    return {"status": False, "msg": "Valor Inexistente para Atividade"}
+                    return {"status": False, "response": 403, "msg": "Valor Inexistente para Atividade"}
             except ValueError:
-                return {"status": False, "msg": "Valor deve ser um número válido"}
+                return {"status": False, "response": 500, "msg": "Valor deve ser um número válido"}
 
             comando = f'INSERT INTO Usuario(nome, email, senha, cpf, telefone, id_tipo, atividade) VALUES("{nome}", "{email}", "{senha}", "{cpf}", "{telefone}", {id_tipo}, "{atividade}")'
             self.cursor.execute(comando)
             self.conex.commit()
             
-            return {"status": True, "msg": "Cadastro realizado com sucesso"}
+            return {"status": True, "response": 200, "msg": "Cadastro realizado com sucesso"}
         except mysql.connector.Error as err:
-            return {"status": False, "msg": f"Erro ao cadastrar: {err}"}
+            return {"status": False, "response": 500, "msg": f"Erro ao cadastrar: {err}"}
 
 
     def Read(self) -> dict:
@@ -93,46 +93,45 @@ class BancoCrud:
                     elif resul[6] == 3:
                         self.tipo = "admin"
                     else:
-                        return {"status": False, "msg": "Valor Inexistente para tipo"}
+                        return {"status": False, "response": 403, "msg": "Valor Inexistente para tipo"}
                     if resul[7] == "0":
                         self.atividade = "Desativado"
                     elif resul[7] == "1":
                         self.atividade = "Ativo"
                     else:
-                        return {"status": False, "msg": "Valor Inexistente para atividade"}
+                        return {"status": False, "response": 403,"msg": "Valor Inexistente para atividade"}
                     data.append({"ID": resul[0], "Nome": resul[1], "Email": resul[2], "cpf": resul[4], "telefone": resul[5], "id_tipo": resul[6], "Profissão": self.tipo, "Atividade": self.atividade})
-                return {"status": True, "data": data}
+                return {"status": True, "response": 200, "data": data}
         except mysql.connector.Error as err:
-            return {"status": False, "msg": f"Erro ao ler dados: {err}"}
+            return {"status": False, "response": 500, "msg": f"Erro ao ler dados: {err}"}
 
 
-    def Update(self, update_nome: str, update_email: str, update_senha: str, update_cpf: str, update_telefone: str, update_atividade: str, id: int) -> dict:
+    def Update(self, update_nome: str, update_email: str, update_senha: str, update_telefone: str, update_atividade: str, id: int) -> dict:
         try:
             # Verificar se o usuário com o ID fornecido existe
             comando_verificar_existencia = f'SELECT COUNT(*) FROM Usuario WHERE id={id}'
             self.cursor.execute(comando_verificar_existencia)
             total_registros = self.cursor.fetchone()[0]
             if total_registros == 0:
-                return {"status": False, "msg": "Usuário não encontrado"}
+                return {"status": False, "response": 404, "msg": "Usuário não encontrado"}
             
             self.nome = update_nome
             self.email = update_email
             self.senha = update_senha
-            self.cpf = update_cpf
             self.telefone = update_telefone
             self.atividade = update_atividade  # Digite "0" para inativar e "1" para Ativar
 
             # Verificar se o valor de atividade é válido
             if update_atividade not in ["0", "1"]:
-                return {"status": False, "msg": "Valor inválido para atividade"}
+                return {"status": False, "response": 403, "msg": "Valor inválido para atividade"}
 
-            comando = f'UPDATE Usuario SET nome="{update_nome}", email="{update_email}", senha="{update_senha}", cpf="{update_cpf}", telefone="{update_telefone}", atividade="{update_atividade}" WHERE id={id}'
+            comando = f'UPDATE Usuario SET nome="{update_nome}", email="{update_email}", senha="{update_senha}", telefone="{update_telefone}", atividade="{update_atividade}" WHERE id={id}'
             self.cursor.execute(comando)
             self.conex.commit()
 
-            return {"status": True, "msg": "Dados atualizados com sucesso"}
+            return {"status": True, "response": 200,"msg": "Dados atualizados com sucesso"}
         except mysql.connector.Error as err:
-            return {"status": False, "msg": f"Erro ao atualizar dados: {err}"}
+            return {"status": False, "response": 500, "msg": f"Erro ao atualizar dados: {err}"}
 
 
     def Delete(self, id: int) -> dict:
@@ -141,9 +140,9 @@ class BancoCrud:
             self.cursor.execute(comando)
             self.conex.commit()
             
-            return {"status": True, "msg": "Registro deletado com sucesso"}
+            return {"status": True, "response": 200, "msg": "Registro deletado com sucesso"}
         except mysql.connector.Error as err:
-            return {"status": False, "msg": f"Erro ao deletar registro: {err}"}
+            return {"status": False, "response": 500, "msg": f"Erro ao deletar registro: {err}"}
 
 
     def fechar(self) -> None:

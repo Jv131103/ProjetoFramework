@@ -1,1 +1,0 @@
-/cadastro/api/read/

@@ -80,6 +80,8 @@ def create():
 def read():
     current = get_jwt_identity()
     view_admin = control.VerificarAdmin(current)
+
+    
     if view_admin != 3:
         return jsonify({"status": False, "msg": "Acesso não autorizado"}), 401
     
@@ -112,12 +114,11 @@ def update(id):
     nome = data.get("nome") #Novo nome para atualização
     email = data.get("email") #Novo email para atualização
     senha = data.get("senha") #Nova senha para atualização
-    cpf = data.get("cpf") #Novo cpf para atualização
     telefone = data.get("telefone") #Novo telefone para atualização
     atividade = data.get("atividade") #Nova atividade para ativação "0"(Desativado) ou "1"(Ativado)
 
     crud = modelo.BancoCrud() #Objeto instanciado do Model do BancoCrud que nos dá acesso ao update dos dados
-    result = crud.Update(nome, email, senha, cpf, telefone, atividade, id)
+    result = crud.Update(nome, email, senha, telefone, atividade, id)
     return jsonify(result) #Retorna uma msg revelando se a atualização foi ou não bem sucedida
 
 # Página de acesso para deletar um usuário [APENAS PARA TESTES!!!!!!]
@@ -131,7 +132,7 @@ def delete(id):
 
 # Página de acesso que nos permite ativar um usuário a qualquer momento pelo seu ID
 # UPDATE: [GET]
-@app.route("/cadastro/api/ativar/<int:id>")
+@app.route("/cadastro/api/ativar/<int:id>", methods=["GET"])
 @jwt_required()
 def ativar_user(id):
     current = get_jwt_identity()
@@ -149,13 +150,20 @@ def ativar_user(id):
 @jwt_required()
 def desativar_user(id):
     current = get_jwt_identity()
+    
     view_admin = control.VerificarAdmin(current)
+    print(view_admin)
     current_user = control.BuscarIdPorEmail(current)
-    if view_admin != 3 or current_user != id: #adm pode desativar todos ou o usuario logado pode se desativar
+    print(current_user[0])
+    if view_admin == 3 or current_user[0] == id:
+
+         #adm pode desativar todos ou o usuario logado pode se desativar
+        crud = controle.VerificacaoCrud() #Objeto instanciado do Controller do BancoCrud que nos dá acesso a leitura e controle de desativação de um usário
+        result = crud.inativar_usuario(id)
+        return jsonify(result) #Retorna a msg indicando se ele está desativado ou se existe ou não
+    if view_admin != 3 or current_user[0] != id:
         return jsonify({"status": False, "msg": "Acesso não autorizado"}), 401
-    crud = controle.VerificacaoCrud() #Objeto instanciado do Controller do BancoCrud que nos dá acesso a leitura e controle de desativação de um usário
-    result = crud.inativar_usuario(id)
-    return jsonify(result) #Retorna a msg indicando se ele está desativado ou se existe ou não
+
 
 
 # Página de acesso ao cadastro de um lab
@@ -276,10 +284,11 @@ def login():
     email = data.get("email")
     senha = data.get("senha")
 
+    if control.VerificarAtivo(email) != "1":
+        return jsonify({"status": False, "msg": "Acesso não autorizado"}), 401
+
     if control.ValidarEmailESenha(email,senha) == True:
         access_token = create_access_token(identity=email)
-        
-
         return jsonify({"token": access_token, "status": True}), 200
     else:
         return jsonify(message="Credenciais inválidas"), 401

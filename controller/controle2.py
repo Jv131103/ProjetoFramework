@@ -50,17 +50,17 @@ class VerificacaoLab(modelo2.LabCrud):
                     elif resultado[3] == 1: #Caso o Lab esteja disponível para o usuário o valor padrão é 1
                         self.disponibilidade = "Disponível"
                     else: #Caso contrário, retorna um erro
-                        return {"status": False, "msg": "Valor Inexistente para Disponibilidade do LAB"}
+                        return {"status": False, "response": 403, "msg": "Valor Inexistente para Disponibilidade do LAB"}
 
                     #Retorna o dicionário com os dados
                     data = {"ID": resultado[0], "Nome": resultado[1], "Atividade": resultado[2], "Status de Atividade": self.atividade, "Disponibilidade": self.disponibilidade, "Status de Disponibilidade": self.disponibilidade}
-                    return {"status": True, "data": data}
+                    return {"status": True, "response": 200, "data": data}
                 else: #Caso não exista dados, ele retorna que nenhum dado foi encontrado
-                    return {"status": False, "msg": f"Nenhum dado encontrado para o ID {id}"}
+                    return {"status": False, "response": 403, "msg": f"Nenhum dado encontrado para o ID {id}"}
             else: #Caso o elemento não exista, retorna um erro
-                return {"status": False, "msg": "Elemento inexistente"}
+                return {"status": False, "response": 404, "msg": "Elemento inexistente"}
         except mysql.connector.Error as err: #Erro que pode ocorrer por meio de banco de dados
-            return {"status": False, "msg": f"Erro ao ler dados: {err}"}
+            return {"status": False, "response": 500, "msg": f"Erro ao ler dados: {err}"}
     
     def desativar_lab(self, id_lab: int) -> dict: #Método desativar_lab que nos permite inativar um Lab por meio de seu ID
         try:
@@ -72,11 +72,12 @@ class VerificacaoLab(modelo2.LabCrud):
                 comando = f'UPDATE Labs SET tipo_status={id_uso_lab_desativado} WHERE id={id_lab}'
                 self.cursor.execute(comando) #Executa o comando
                 self.conex.commit() #Atualiza os dados no registro do Banco de Dados
-                return {"status": True, "msg": f"Lab de ID {id_lab} desativado com sucesso"}
+                return {"status": True, "response": 200 ,"msg": f"Lab de ID {id_lab} desativado com sucesso"}
             else: #Caso não haja dados ele retorna um Msg indicando que o elemento não existe
-                return {"status": False, "msg": "Elemento inexistente"}
+                return {"status": False, "response": 403, "msg": "Elemento inexistente"}
         except mysql.connector.Error as err: #Erro de execução MySQL
-            return {"status": False, "msg": f"Erro ao desativar Lab: {err}"}
+            return {"status": False, "response": 500, "msg": f"Erro ao desativar Lab: {err}"}
+
 
     def ativar_lab(self, id_lab: int) -> dict: #Método desativar_lab que nos permite ativar um Lab por meio de seu ID e retorna um Dict
         try:
@@ -88,11 +89,12 @@ class VerificacaoLab(modelo2.LabCrud):
                 comando = f'UPDATE Labs SET tipo_status={id_uso_lab_ativado} WHERE id={id_lab}'
                 self.cursor.execute(comando) #Executa o comando SQL
                 self.conex.commit() #Atualiza o registro no Bnaco de dados
-                return {"status": True, "msg": f"Lab de ID {id_lab} ativado com sucesso"}
+                return {"status": True, "response": 200, "msg": f"Lab de ID {id_lab} ativado com sucesso"}
             else: #Caso não haja elementos, retorna um msg de erro de elemento não encontrado
-                return {"status": False, "msg": "Elemento inexistente"}
+                return {"status": False, "response": 404, "msg": "Elemento inexistente"}
         except mysql.connector.Error as err: #Erro de execução MySQL
-            return {"status": False, "msg": f"Erro ao ativar Lab: {err}"}
+            return {"status": False, "response": 500, "msg": f"Erro ao ativar Lab: {err}"}
+
 
     def disponibilizar_lab_para_usuario(self, id_lab: int, id_usuario: int) -> dict: #Método disponibilizar_lab_para_usuario, que nos permite liberar um Lab para um usuário específico
         try:
@@ -102,23 +104,23 @@ class VerificacaoLab(modelo2.LabCrud):
             disponibilidade_lab = self.cursor.fetchone() #Extrai os dados
 
             if not disponibilidade_lab: #Se o lab não existir
-                return {"status": False, "msg": f"Lab de ID {id_lab} não existe"}
+                return {"status": False, "response": 403, "msg": f"Lab de ID {id_lab} não existe"}
             
             if disponibilidade_lab[0] == 0: #Se o lab não estiver disponível
-                return {"status": False, "msg": f"Lab de ID {id_lab} não está disponível"}
+                return {"status": False, "response": 403, "msg": f"Lab de ID {id_lab} não está disponível"}
 
             # Verifique se o usuário existe
             if not self.verificar_usuario_existe(id_usuario): 
-                return {"status": False, "msg": f"Usuário de ID {id_usuario} não existe"}
+                return {"status": False, "response": 403, "msg": f"Usuário de ID {id_usuario} não existe"}
 
             # Marque o laboratório como indisponível
             comando_atualizacao_lab = f'UPDATE Labs SET disponibilidade=0 WHERE id={id_lab}' #Registra para o uusário especificado
             self.cursor.execute(comando_atualizacao_lab) #Executa o UPDATE MySQL
             self.conex.commit() #Registra no banco de dados
             
-            return {"status": True, "msg": f"Lab de ID {id_lab} disponibilizado para usuário de ID {id_usuario}"}
+            return {"status": True, "response": 200, "msg": f"Lab de ID {id_lab} disponibilizado para usuário de ID {id_usuario}"}
         except mysql.connector.Error as err:
-            return {"status": False, "msg": f"Erro ao disponibilizar lab: {err}"}
+            return {"status": False, "response": 500, "msg": f"Erro ao disponibilizar lab: {err}"}
 
     def tornar_lab_disponivel(self, id_lab: int) -> dict: #Método tornar_lab_disponivel, que nos permite liberar um acesso a um lab por meio de seu ID
         try:
@@ -127,18 +129,19 @@ class VerificacaoLab(modelo2.LabCrud):
             self.cursor.execute(comando_verificacao) #Executa o comando
             disponibilidade = self.cursor.fetchone() #Puxa os dados
             if not disponibilidade: #Se o Lab existir
-                return {"status": False, "msg": f"Lab de ID {id_lab} não existe"}
+                return {"status": False, "response": 403, "msg": f"Lab de ID {id_lab} não existe"}
 
             if disponibilidade[0] == 1: #Se o lab já estiver disponível
-                return {"status": False, "msg": f"Lab de ID {id_lab} já está disponível"}
+                return {"status": False, "response": 403, "msg": f"Lab de ID {id_lab} já está disponível"}
 
             # Marque o laboratório como disponível
             comando = f'UPDATE Labs SET disponibilidade=1 WHERE id={id_lab}'
             self.cursor.execute(comando) #Executa o comando SQL
             self.conex.commit() #Altera o registro do banco de dados
-            return {"status": True, "msg": f"Lab de ID {id_lab} tornou-se disponível novamente"}
+            return {"status": True, "response": 200, "msg": f"Lab de ID {id_lab} tornou-se disponível novamente"}
         except mysql.connector.Error as err: #Erro MySQL
-            return {"status": False, "msg": f"Erro ao tornar lab disponível: {err}"}
+            return {"status": False, "response": 500, "msg": f"Erro ao tornar lab disponível: {err}"}
+
 
 if __name__ == "__main__":
     labx = VerificacaoLab()
