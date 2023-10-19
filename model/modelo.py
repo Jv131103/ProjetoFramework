@@ -9,7 +9,7 @@ class BancoCrud:
             host="localhost",
             user="root",
             password="Joao$131103",
-            database="Projeto"
+            database="Projeto" #Padrão
         ) #Faz a conexão com o MySQL
     
         self.cursor = self.conex.cursor() #Atributo cursor que recebe a conexão do Banco de dados
