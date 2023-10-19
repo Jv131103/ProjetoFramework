@@ -4,8 +4,7 @@ from flask import Flask, request, jsonify, render_template, url_for, session, re
 from api import epy_crud
 from model import modelo, modelo2
 from controller import controle, controle2
-import requests
-import jwt
+
 
 app = Flask(__name__, template_folder='view')
 
@@ -99,18 +98,52 @@ def cadastro():
     return render_template('cadastro.html')
 
 
+@app.route('/upgrade/<int:id>', methods=['GET', 'POST'])
+def upgrade(id):
+    up = epy_crud.MyAPI()
+    value = controle.VerificacaoCrud().BuscarCPF(id)
+    tipo = controle.VerificacaoCrud().BuscarTipoPorCPF(value)
+    if request.method == 'POST':
+        try:
+            # Get request parameters
+            nome = request.form.get('nome')
+            email = request.form.get('email')
+            senha = request.form.get('senha')
+            telefone = request.form.get('telefone')
+        
+            if value:
+                # Call the Upgrade_User method
+                result = up.Upgrade_User(id, nome, email, senha, telefone)
+                # Render a template with the result
+                return render_template('upgrade_result.html', result=result['msg'], tipo=tipo, cpf=value)
+            else:
+                return render_template('error_acess.html', motivo="CPF não encontrado!")
+
+        except Exception as e:
+            error_message = f"Internal Server Error: {str(e)}"
+            return render_template('error_acess.html', motivo=error_message)
+
+    # If it's a GET request, render the form template
+    return render_template('upgrade.html', id=id, cpf=value, tipo=tipo)
+
+
 @app.route('/dados/<string:token>/<int:aluno_id>', methods=['GET'])
 def area_do_aluno(aluno_id, token):
     data = epy_crud.MyAPI()
     try:
         result = data.Read_ID(aluno_id, token)
         if result['response'] == 200:
-            print(result)
             return render_template("dados_pessoais.html", resultado=result['dado'], value=result['dado']['Tipo'])
         else:
-            return render_template("error_acessAluno.html", motivo=result['msg'], resp=result["response"])
+            return render_template("error_acess.html", motivo=result['msg'], resp=result["response"])
     except Exception as e:
         return render_template("error500.html", motivo=e)
+
+
+# Rota para lidar com erro 404
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('error404.html'), 404
 
 
 if __name__ == '__main__':

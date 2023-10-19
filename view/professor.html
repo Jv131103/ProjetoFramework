@@ -3,10 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Área do Professor</title>
+    <link rel="icon" href="/static/image/user.png">
+    <title>Área do Aluno</title>
+    <!-- Bootstrap CSS link -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .navbar-nav .nav-item.active .nav-link {
+            color: #007bff;
+        }
+
+        .navbar-nav .nav-item.active .nav-link:hover {
+            color: #0056b3; /* Darker shade on hover */
+        }
+
+        .navbar-nav .nav-item.active .nav-link:active {
+            color: #003366; /* Darker shade on click */
+        }
+    </style>
 </head>
-<body>
-    <h1>Bem-vindo, Professor!</h1>
-    <!-- Conteúdo da área do professor -->
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Área do Professor</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Voltar ao Login!</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h1 class="card-title">Bem-vindo, Professor!</h1>
+
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <a href="/dados/{{ token }}/{{ id }}" class="btn btn-primary btn-lg btn-block">
+                                    <img src="/static/image/data.jpg" alt="Dados Pessoais" class="img-fluid" style="height: 100%;">
+                                    Dados Pessoais
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="/upgrade/{{ id }}" class="btn btn-success btn-lg btn-block">
+                                    <img src="/static/image/data1.jpg" alt="Atualizar Dados" class="img-fluid" style="height: 100%;">
+                                    Atualizar Dados
+                                </a>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and Popper.js scripts (required for some Bootstrap components) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

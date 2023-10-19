@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/update.css">
+    <link rel="icon" href="/static/image/alterar.jpg">
+    <style>
+        .error-message {
+            color: red;
+        }
+
+        /* Estilo para a visibilidade da senha */
+        .password-container {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            bottom: 8px; /* Posicionado abaixo do campo de senha */
+            right: 10px;
+            cursor: pointer;
+        }
+    </style>
+    <title>Upgrade User</title>
+</head>
+<body>
+    <h1>Alterar seus dados</h1>
+    <form id="upgradeForm" method="post" action="{{ url_for('upgrade', id=id) }}">
+        <label for="nome">Nome:</label>
+        <input type="text" name="nome" id="nome" required><br>
+
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required><br>
+
+        <label for="senha">Senha:</label>
+        <div class="password-container">
+            <input type="password" name="senha" id="senha" required>
+            <button type="button" onclick="generateRandomPassword()">Gerar Senha Aleatória</button>
+            <span class="password-toggle" onclick="togglePassword()">👁️</span>
+        </div>
+        <br>
+
+        <label for="telefone">Telefone:</label>
+        <input type="text" name="telefone" id="telefone" required><br>
+
+        <input type="submit" value="Upgrade" onclick="validateForm()">
+        <input type="reset" value="Refresh">
+
+        <p id="confirmationMessage" class="error-message"></p>
+        <br>
+        <a href="/login/{{ tipo }}/{{ cpf }}">Menu do usuário!</a><br><br>
+        <a href="/">Área de Login!</a>
+    </form>
+
+    <script>
+        function validateForm() {
+            var nome = document.getElementById("nome").value;
+            var email = document.getElementById("email").value;
+            var senha = document.getElementById("senha").value;
+            var telefone = document.getElementById("telefone").value;
+
+            if (nome === "" && email === "" && senha === "" && telefone === "") {
+                document.getElementById("confirmationMessage").innerText = "Por favor, insira todos os dados";
+                return false;
+            } else if (nome === ""){
+                document.getElementById("confirmationMessage").innerText = "Por favor, insira o seu nome de usuário";
+                return false;
+            } else if (email === ""){
+                document.getElementById("confirmationMessage").innerText = "Por favor, insira o seu novo email";
+                return false;
+            } else if (senha === ""){
+                document.getElementById("confirmationMessage").innerText = "Por favor, insira a sua nova senha";
+                return false;
+            } else if (telefone === ""){
+                document.getElementById("confirmationMessage").innerText = "Por favor, insira o seu novo número de telefone ou refaça o anterior";
+                return false;
+            } else {
+                // You can add more validation logic if needed
+
+                // If everything is valid, you can submit the form
+                document.getElementById("confirmationMessage").innerText = "Form submitted successfully!";
+                document.getElementById("upgradeForm").submit();
+            }
+        }
+
+        // Função para alternar a visibilidade da senha
+        function togglePassword() {
+            var senhaInput = document.getElementById("senha");
+            senhaInput.type = (senhaInput.type === "password") ? "text" : "password";
+        }
+
+        function generateRandomPassword() {
+            var length = 12; // Tamanho da senha
+            var charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+"; // Caracteres permitidos
+            var password = "";
+
+            for (var i = 0; i < length; i++) {
+                var randomIndex = Math.floor(Math.random() * charset.length);
+                password += charset.charAt(randomIndex);
+            }
+
+            // Exibir a senha gerada
+            alert("Senha Aleatória: " + password + "\n\n" + "COPIE E COLE COM:\n\n" + "1- Arraste o mouse pressionando o botão de clicar sobre a senha gerada\n" + "2- Após isso pressione as teclas juntas CTRL + C para copiar\n" + "3- Clique no Botão OK e em seguida clique no campo da senha onde você irá inserir a senha nova gerada\n" + "4- Após isso na senha pressione as teclas juntas CTRL + V para colar na área de senha");
+        }
+        
+    </script>
+</body>
+</html>

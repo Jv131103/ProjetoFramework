@@ -13,22 +13,17 @@
         }
 
         h1 {
-            color: #ff0000;
-        }
-
-        p {
-            color: #4caf50;
-            font-style: italic;
-            margin-top: 10px;
-        }
-
-        h2 {
-            color: #ff0000;
+            color: #ff4500;
         }
 
         img {
             width: 300px;
-            height: 300px; /* Mantém a imagem quadrada */
+            border-radius: 50%;
+            margin-top: 20px;
+        }
+
+        h2 {
+            color: #ff4500;
         }
 
         nav {
@@ -44,13 +39,12 @@
             text-decoration: underline;
         }
     </style>
-    <title>Erro interno!</title>
+    <title>Acesso não encontrado!</title>
 </head>
 <body>
-    <h1>Houve um erro interno!</h1>
-    <p>Motivo: {{ motivo }}</p>
-    <h2>Código: 500 -> Internal Server Error</h2>
-    <img src="/static/image/BradPit.jpg" alt="Imagem de Brad Pitt">
+    <h1>Página não encontrada</h1>
+    <img src="/static/image/gato_bugado.jpg" alt="Gato Bugado">
+    <h2>Código: 404 -> Not Found</h2>
     <nav>
         <p>Voltar à área de Login: <a href="/">Login</a></p>
     </nav>

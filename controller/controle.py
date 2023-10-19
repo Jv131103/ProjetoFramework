@@ -196,6 +196,35 @@ class VerificacaoCrud(modelo.BancoCrud):
         except mysql.connector.Error as err:
             print("ERRO de MySQL")
             return False
+    
+
+    def BuscarCPF(self, id):
+        try:
+            comando = f'SELECT cpf FROM Usuario WHERE id={id}'
+            self.cursor.execute(comando)
+            resultado = self.cursor.fetchone()
+            if resultado is not None:
+                return resultado[0]
+            else:
+                return False
+        except mysql.connector.Error as err:
+            print("ERRO de MySQL")
+            return False
+        
+    
+    def BuscarTipoPorCPF(self, cpf):
+        try:
+            comando = f'SELECT id_tipo FROM Usuario WHERE cpf="{cpf}"'
+            self.cursor.execute(comando)
+            resultado = self.cursor.fetchone()
+            if resultado is not None:
+                return resultado[0]
+            else:
+                return False
+        except mysql.connector.Error as err:
+            print("ERRO de MySQL")
+            return False
+    
 
 
 if __name__ == "__main__":
