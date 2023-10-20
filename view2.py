@@ -9,20 +9,21 @@ from controller import controle, controle2
 app = Flask(__name__, template_folder='view')
 
 
-@app.route('/login/<int:value>/<string:cpf>')
-def ReturnToLogin(value, cpf):
+@app.route('/login/<int:id>/<int:value>/<string:cpf>')
+def ReturnToLogin(value, cpf, id):
     log = controle.VerificacaoCrud()
     logar = epy_crud.MyAPI()
     data = log.BuscarDadosDeLogin(cpf)
-    if data:
+    i = log.BuscarIDporCPF(cpf)
+    if i == id and log.BuscarTipoPorCPF(cpf) == value:
         id = log.BuscarIdPorEmail(data[0])
         resultado = logar.Login(data[0], data[1])
-        if resultado['status'] == True:
+        if data:
             if value == 1:
                 return render_template('professor.html', id=id, token=resultado['dado']['token'])
             elif value == 2:
                 return render_template('aluno.html', id=id, token=resultado['dado']['token'])
-            else:
+            elif value == 3:
                 return render_template('admin.html', id=id, token=resultado['dado']['token'])
         else:
             return render_template("error_acess.html", motivo="Erro! Usuário não liberado")
@@ -41,8 +42,9 @@ def login():
 
     log = controle.VerificacaoCrud()
     value = log.BuscarTipoPorEmail(email)
+    print(value)
     id = log.BuscarIdPorEmail(email)
-    if value[0] in [1, 2, 3]:
+    if value != False:
         logar = epy_crud.MyAPI()
         resultado = logar.Login(email, senha)
         if resultado['status'] == True:
@@ -102,6 +104,8 @@ def cadastro():
 def upgrade(id):
     up = epy_crud.MyAPI()
     value = controle.VerificacaoCrud().BuscarCPF(id)
+    token = controle.VerificacaoCrud().BuscarEmaiSenhalPorID(id)
+    data = epy_crud.MyAPI().Login(token[0], token[1])
     tipo = controle.VerificacaoCrud().BuscarTipoPorCPF(value)
     if request.method == 'POST':
         try:
@@ -114,26 +118,26 @@ def upgrade(id):
             if value:
                 # Call the Upgrade_User method
                 result = up.Upgrade_User(id, nome, email, senha, telefone)
+                resultado = epy_crud.MyAPI().Login(email, senha)
                 # Render a template with the result
-                return render_template('upgrade_result.html', result=result['msg'], tipo=tipo, cpf=value)
+                return render_template('upgrade_result.html', id=id, result=result['msg'], tipo=tipo, cpf=value, token=resultado['dado']['token'])
             else:
                 return render_template('error_acess.html', motivo="CPF não encontrado!")
 
         except Exception as e:
             error_message = f"Internal Server Error: {str(e)}"
             return render_template('error_acess.html', motivo=error_message)
-
     # If it's a GET request, render the form template
     return render_template('upgrade.html', id=id, cpf=value, tipo=tipo)
 
 
-@app.route('/dados/<string:token>/<int:aluno_id>', methods=['GET'])
-def area_do_aluno(aluno_id, token):
+@app.route('/dados/<string:token>/<int:id>', methods=['GET'])
+def area_do_aluno(id, token):
     data = epy_crud.MyAPI()
     try:
-        result = data.Read_ID(aluno_id, token)
+        result = data.Read_ID(id, token)
         if result['response'] == 200:
-            return render_template("dados_pessoais.html", resultado=result['dado'], value=result['dado']['Tipo'])
+            return render_template("dados_pessoais.html", resultado=result['dado'], value=result['dado']['Tipo'], token=token, id=id)
         else:
             return render_template("error_acess.html", motivo=result['msg'], resp=result["response"])
     except Exception as e:
@@ -147,4 +151,4 @@ def page_not_found(e):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0", port=5001)

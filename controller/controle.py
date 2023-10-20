@@ -224,7 +224,35 @@ class VerificacaoCrud(modelo.BancoCrud):
         except mysql.connector.Error as err:
             print("ERRO de MySQL")
             return False
+        
     
+    def BuscarEmaiSenhalPorID(self, id):
+        try:
+            comando = f'SELECT email, senha FROM Usuario WHERE id={id}'
+            self.cursor.execute(comando)
+            resultado = self.cursor.fetchone()
+            l = []
+            if resultado is not None:
+                for x in resultado:
+                    l.append(x)
+                return l
+            else:
+                return False
+        except mysql.connector.Error as err:
+            print("ERRO de MySQL")
+    
+
+    def BuscarIDporCPF(self, cpf):
+        try:
+            comando = f'SELECT id FROM Usuario WHERE cpf="{cpf}"'
+            self.cursor.execute(comando)
+            resultado = self.cursor.fetchone()
+            if resultado is not None:
+                return resultado[0]
+            else:
+                return False
+        except mysql.connector.Error as err:
+            print("ERRO de MySQL")
 
 
 if __name__ == "__main__":
