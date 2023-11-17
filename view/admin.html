@@ -9,5 +9,10 @@
     <h1>Bem-vindo, Admin!</h1>
     <!-- Conteúdo da área do admin -->
     <a href="/">Voltar ao Login</a>
+    <div>
+        <a href="/dados/{{ token }}/{{ id }}">Seus dados Pessoais</a><br>
+        <a href="/upgrade/{{ id }}">Atualizar seus dados</a><br>
+        <a href="/listar_usuarios/{{ id }}/{{ token }}">Ver todos os dados</a>
+    </div>
 </body>
 </html>

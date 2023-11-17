@@ -42,7 +42,7 @@ def login():
 
     log = controle.VerificacaoCrud()
     value = log.BuscarTipoPorEmail(email)
-    print(value)
+    #print(value)
     id = log.BuscarIdPorEmail(email)
     if value != False:
         logar = epy_crud.MyAPI()
@@ -149,6 +149,185 @@ def area_do_aluno(id, token):
 def page_not_found(e):
     return render_template('error404.html'), 404
 
+
+@app.route('/listar_usuarios/<int:id>/<string:token>')
+def listar_usuarios(id, token):
+    verificador = controle.VerificacaoCrud()
+    tipo = verificador.BuscarTipoPorID(id)
+    cpf = verificador.BuscarCPF(id)
+    if tipo == 3:
+        data = epy_crud.MyAPI()
+        try:
+            result = data.Read_all(token)
+            if result['response'] == 200:
+                return render_template("read_all.html", resultado=result['dado'], value=tipo, token=token, id=id, cpf=cpf)
+        except Exception as e:
+            return render_template("error500.html", motivo=e)
+    else:
+        return render_template("error_acess.html", motivo="Usuário não têm permissão de acesso!")
+
+######################## FUNÇOES ADMIN #############################
+
+@app.route('/cadastro_lab', methods=['GET', 'POST'])
+def cadastro_lab():
+    if request.method == 'POST':
+        nome = request.form['nome']
+        token = request.headers.get('Authorization')
+       
+      
+
+        result = epy_crud.MyAPI().CadastrarLab(nome, token)  
+
+    
+        if result.get('status'):
+         
+            return render_template('cadastro_lab_ok', nome=nome) #coloquei o nome aqui para informar qual foi cadastrado
+        else:
+         
+            erro = result.get('msg')
+            return render_template('cadastro_lab_error.html', erro=erro)
+
+    return render_template('cadastro_lab_form.html')
+
+
+@app.route('/listar_laboratorios')
+def listar_laboratorios():
+   
+    resultado = epy_crud.MyAPI().Read_all_Labs()
+
+    if resultado.get('status'):
+    
+        laboratorios = resultado.get('data')
+        return render_template('listar_laboratorios.html', laboratorios=laboratorios)
+    else:
+   
+        erro = resultado.get('msg')
+        return render_template('erro.html', erro=erro)
+    
+#         <body>
+#     <h1>Lista de Laboratórios</h1>
+#     <ul>
+#         {% for laboratorio in laboratorios %}
+#             <li>{{ laboratorio.nome }} - Status: {{ laboratorio.tipo_status }} - Disponibilidade: {{ laboratorio.disponibilidade }}</li>
+#         {% endfor %}
+#     </ul>
+# </body> DICA PARA QUEM FOR FAZER O HTML
+
+@app.route('/detalhes_laboratorio/<int:id>')
+def detalhes_laboratorio(id):
+
+    resultado = epy_crud.MyAPI().Read_Lab_ID(id)
+
+    if resultado.get('status'):
+     
+        detalhes = resultado.get('data')
+        return render_template('detalhes_laboratorio.html', detalhes=detalhes)
+    else:
+      
+        erro = resultado.get('msg')
+        return render_template('erro.html', erro=erro)
+    
+#  <script>
+#         document.getElementById('lista-usuarios').addEventListener('click', function(event) {
+#             // Verifica se o clique ocorreu em um elemento <li>
+#             if (event.target.tagName === 'LI') {
+#                 // Obtém o ID do usuário clicado
+#                 var userId = event.target.dataset.id;
+
+#                 // Aqui você pode enviar o ID para o seu backend usando uma solicitação AJAX ou algo similar
+#                 // Exemplo de como enviar usando fetch:
+#                 fetch(`/ativar_usuario/${userId}`, {
+#                     method: 'GET',
+#                     headers: {
+#                         'Authorization': 'SeuTokenJWTAqui'
+#                         // Adicione outros cabeçalhos necessários
+#                     }
+#                 })
+#                 .then(response => response.text())
+#                 .then(resultado => {
+#                     // Exibe o resultado em um alerta
+#                     alert(resultado);
+
+#                     // Volta para a página anterior
+#                     window.history.back();
+#                 })
+#                 .catch(error => console.error('Erro:', error));
+#             }
+#         });
+#     </script>
+   
+@app.route('/ativar_usuario/<int:id>')
+def ativar_user_painel(id):
+    token = request.headers.get('Authorization')
+
+    resultado = epy_crud.MyAPI.AtivarUser(id,token)
+    return f'<script>alert("{resultado}"); window.history.back();</script>'
+
+#  <script>
+#         document.getElementById('lista-usuarios').addEventListener('click', function(event) {
+#             // Verifica se o clique ocorreu em um elemento <li>
+#             if (event.target.tagName === 'LI') {
+#                 // Obtém o ID do usuário clicado
+#                 var userId = event.target.dataset.id;
+
+#                 // Aqui você pode enviar o ID para o seu backend usando uma solicitação AJAX ou algo similar
+#                 // Exemplo de como enviar usando fetch:
+#                 fetch(`/ativar_usuario/${userId}`, {
+#                     method: 'GET',
+#                     headers: {
+#                         'Authorization': 'SeuTokenJWTAqui'
+#                         // Adicione outros cabeçalhos necessários
+#                     }
+#                 })
+#                 .then(response => response.text())
+#                 .then(resultado => {
+#                     // Exibe o resultado em um alerta
+#                     alert(resultado);
+
+#                     // Volta para a página anterior
+#                     window.history.back();
+#                 })
+#                 .catch(error => console.error('Erro:', error));
+#             }
+#         });
+#     </script>
+
+
+
+@app.route('/desativar_user/<int:id>')
+def desativar_user(id):
+    token = request.headers.get('Authorization')
+    resultado = epy_crud.MyAPI.Desativar(id,token)
+    return f'<script>alert("{resultado}"); window.history.back();</script>'
+
+#  <script>
+#         document.getElementById('lista-usuarios').addEventListener('click', function(event) {
+#             // Verifica se o clique ocorreu em um elemento <li>
+#             if (event.target.tagName === 'LI') {
+#                 // Obtém o ID do usuário clicado
+#                 var userId = event.target.dataset.id;
+
+#                 // Aqui você pode enviar o ID para o seu backend usando uma solicitação AJAX ou algo similar
+#                 // Exemplo de como enviar usando fetch:
+#                 fetch(`/ativar_usuario/${userId}`, {
+#                     method: 'GET',
+#                     headers: {
+#                         'Authorization': 'SeuTokenJWTAqui'
+#                         // Adicione outros cabeçalhos necessários
+#                     }
+#                 })
+#                 .then(response => response.text())
+#                 .then(resultado => {
+#                     // Exibe o resultado em um alerta
+#                     alert(resultado);
+
+#                     // Volta para a página anterior
+#                     window.history.back();
+#                 })
+#                 .catch(error => console.error('Erro:', error));
+#             }
+#         });
+#     </script>
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=5001)

@@ -255,6 +255,18 @@ class VerificacaoCrud(modelo.BancoCrud):
             print("ERRO de MySQL")
 
 
+    def BuscarTipoPorID(self, id):
+        try:
+            comando = f'SELECT id_tipo FROM Usuario WHERE id="{id}"'
+            self.cursor.execute(comando)
+            resultado = self.cursor.fetchone()
+            if resultado is not None:
+                return resultado[0]
+            else:
+                return False
+        except mysql.connector.Error as err:
+            print("ERRO de MySQL")
+
 if __name__ == "__main__":
     x = VerificacaoCrud()
     print(x.VerificarExistenciaDoUsuario("noa@noa"))
